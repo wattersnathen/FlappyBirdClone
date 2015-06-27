@@ -199,7 +199,11 @@ var Bird = function () {
 };
 
 Bird.prototype.onCollision = function (entity) {
-    console.log('Bird collided with entity: ', entity);
+    // console.log('Bird collided with entity: ', entity);
+    this.components.physics.position = {
+        x: 0,
+        y: 0.5
+    };
 };
 
 exports.Bird = Bird;
@@ -227,7 +231,8 @@ var Pipe = function (pos, size) {
 };
 
 Pipe.prototype.onCollision = function (entity) {
-    console.log('Pipe collided with entity: ', entity);
+    // console.log('Pipe collided with entity: ', entity);
+    
 };
 
 exports.Pipe = Pipe;

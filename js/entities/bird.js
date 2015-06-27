@@ -20,7 +20,8 @@ var Bird = function () {
 };
 
 Bird.prototype.onCollision = function (entity) {
-    // console.log('Bird collided with entity: ', entity);
+    
+    // Reset the Bird's position on collision
     this.components.physics.position = {
         x: 0,
         y: 0.5

@@ -199,7 +199,8 @@ var Bird = function () {
 };
 
 Bird.prototype.onCollision = function (entity) {
-    // console.log('Bird collided with entity: ', entity);
+    
+    // Reset the Bird's position on collision
     this.components.physics.position = {
         x: 0,
         y: 0.5
@@ -232,7 +233,6 @@ var Pipe = function (pos, size) {
 
 Pipe.prototype.onCollision = function (entity) {
     // console.log('Pipe collided with entity: ', entity);
-    
 };
 
 exports.Pipe = Pipe;
@@ -275,40 +275,53 @@ document.addEventListener('DOMContentLoaded', function () {
 exports.pipeWidth = 0.15;   // rectangular width of the pipes to be the same
 exports.pipeGap = 0.2;      // distance between the pipes
 },{}],11:[function(require,module,exports){
+var bird = require('../entities/bird');
+var pipe = require('../entities/pipe');
+
 var CollisionSystem = function (entities) {
     this.entities = entities;
 };
 
 CollisionSystem.prototype.tick = function () {
-    for (var i = 0, len = this.entities.length; i < len; i++) {
+    for (var i = 0; i < this.entities.length; i++) {
         var entityA = this.entities[i];
-        if (!('collision' in entityA.components)) {
+        if (!'collision' in entityA.components) {
             continue;
         }
         
-        for (var j = i + 1; j < len; j++) {
+        for (var j = i + 1; j < this.entities.length; j++) {
             var entityB = this.entities[j];
-            if (!('collision' in entityB.components)) {
+            if (!'collision' in entityB.components) {
                 continue;
             }
             
             if (!entityA.components.collision.collidesWith(entityB)) {
                 continue;    
             }
+
+            console.log('Entities Array ', this.entities);
                 
             if (entityA.components.collision.onCollision) {
                 entityA.components.collision.onCollision(entityB);
+                if (entityA instanceof bird.Bird) {
+                    this.entities.splice(1, this.entities.length - 1);
+                }
             }
             
             if (entityB.components.collision.onCollision) {
                 entityB.components.collision.onCollision(entityA);
+                if (entityB instanceof bird.Bird) {
+                    this.entities.splice(1, this.entities.length - 1);
+                }
             }
+
+            
         }
     }
 };
 
 exports.CollisionSystem = CollisionSystem;
-},{}],12:[function(require,module,exports){
+},{"../entities/bird":6,"../entities/pipe":7}],12:[function(require,module,exports){
 var GraphicsSystem = function (entities) {
     this.entities = entities;
     

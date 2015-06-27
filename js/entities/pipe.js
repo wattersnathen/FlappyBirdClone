@@ -22,7 +22,6 @@ var Pipe = function (pos, size) {
 
 Pipe.prototype.onCollision = function (entity) {
     // console.log('Pipe collided with entity: ', entity);
-    
 };
 
 exports.Pipe = Pipe;

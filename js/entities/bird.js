@@ -5,8 +5,8 @@ var settings = require("../settings");
 
 var Bird = function () {
     var physics = new physicsComponent.PhysicsComponent(this);
-    physics.position.y = 0.5;
-    physics.acceleration.y = -2;
+    physics.position.y = settings.birdStartPos.y;
+    physics.acceleration.y = settings.gravity;
     
     var graphics = new graphicsComponent.BirdGraphicsComponent(this);
     var collision = new collisionComponent.CircleCollisionComponent(this, 0.02);
@@ -23,8 +23,8 @@ Bird.prototype.onCollision = function (entity) {
     
     // Reset the Bird's position on collision
     this.components.physics.position = {
-        x: 0,
-        y: 0.5
+        x: settings.birdStartPos.x,
+        y: settings.birdStartPos.y
     };
 };
 

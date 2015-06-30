@@ -40,7 +40,16 @@ PipeSystem.prototype.tick = function () {
         x: settings.pipeWidth,
         y: height
     };
+
     this.entities.push(new pipe.Pipe(position, size));
+
+    for (var i = 0; i < this.entities.length; i++) {
+        if (this.entities[i] instanceof pipe.Pipe 
+            && this.entities[i].components.physics.position.x < -initialX) {
+            this.entities.splice(i, 1);
+            i--;
+        }
+    }
 };
 
 exports.PipeSystem = PipeSystem;

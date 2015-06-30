@@ -15,9 +15,11 @@ PipeSystem.prototype.tick = function () {
     var canvasRight = 0.5 * this.canvas.width / this.canvas.height;
     var gapPosition = 0.4 + Math.random() * 0.2;
 
+    var initialX = canvasRight + settings.pipeWidth / 2;
+
     var height = gapPosition - settings.pipeGap / 2;
     var position = {
-        x: canvasRight + settings.pipeWidth / 2,
+        x: initialX,
         y: height / 2
     };
 
@@ -30,7 +32,7 @@ PipeSystem.prototype.tick = function () {
 
     var height = 1 - gapPosition - settings.pipeGap / 2;
     var position = {
-        x: canvasRight + settings.pipeWidth / 2,
+        x: initialX,
         y: 1 - height / 2
     };
 

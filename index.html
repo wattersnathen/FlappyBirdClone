@@ -10,6 +10,24 @@
     <body>
         
         <canvas id="canvas"></canvas>
+
+        <div style="position: absolute; top: 0; left: 0; color: red; z-index=999;" id="fps">
+            <script>
+                (function () {
+                 var last = Date.now();
+
+                 var updateFps = function () {
+                   var delta = (new Date().getTime() - last)/1000;
+                   last = Date.now();
+                   var fps = 1/delta;
+                   document.getElementById('fps').innerText = 'FPS: ' + fps;
+                   requestAnimationFrame(updateFps);
+                 }
+
+                 updateFps();
+                })();
+            </script>
+        </div>
         
     </body>
 </html>

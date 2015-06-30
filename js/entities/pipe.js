@@ -11,7 +11,7 @@ var Pipe = function (pos, size) {
     collision.onCollision = this.onCollision.bind(this);
     
     physics.position = pos;
-    physics.acceleration.x = -0.4;
+    physics.velocity.x = -0.4;
     
     this.components = {
         physics: physics,

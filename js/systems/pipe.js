@@ -15,9 +15,11 @@ PipeSystem.prototype.tick = function () {
     var canvasRight = 0.5 * this.canvas.width / this.canvas.height;
     var gapPosition = 0.4 + Math.random() * 0.2;
 
+    var initialX = canvasRight + settings.pipeWidth / 2;
+
     var height = gapPosition - settings.pipeGap / 2;
     var position = {
-        x: canvasRight + settings.pipeWidth / 2,
+        x: initialX,
         y: height / 2
     };
 
@@ -30,7 +32,7 @@ PipeSystem.prototype.tick = function () {
 
     var height = 1 - gapPosition - settings.pipeGap / 2;
     var position = {
-        x: canvasRight + settings.pipeWidth / 2,
+        x: initialX,
         y: 1 - height / 2
     };
 
@@ -38,7 +40,16 @@ PipeSystem.prototype.tick = function () {
         x: settings.pipeWidth,
         y: height
     };
+
     this.entities.push(new pipe.Pipe(position, size));
+
+    for (var i = 0; i < this.entities.length; i++) {
+        if (this.entities[i] instanceof pipe.Pipe 
+            && this.entities[i].components.physics.position.x < -initialX) {
+            this.entities.splice(i, 1);
+            i--;
+        }
+    }
 };
 
 exports.PipeSystem = PipeSystem;

@@ -4,9 +4,11 @@ var inputSystem = require('./systems/input');
 var pipeSystem = require('./systems/pipe');
 
 var bird = require('./entities/bird');
+var topedge = require('./entities/topedge');
+var bottomedge = require('./entities/bottomedge');
 
 var FlappyBird = function () {
-    this.entities = [new bird.Bird()];
+    this.entities = [new bird.Bird(), new topedge.TopEdge(), new bottomedge.BottomEdge()];
     this.graphics = new graphicsSystem.GraphicsSystem(this.entities);
     this.physics = new physicsSystem.PhysicsSystem(this.entities);
     this.input = new inputSystem.InputSystem(this.entities);

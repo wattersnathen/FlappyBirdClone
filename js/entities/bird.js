@@ -26,6 +26,7 @@ Bird.prototype.onCollision = function (entity) {
         x: settings.birdStartPos.x,
         y: settings.birdStartPos.y
     };
+    this.components.physics.velocity.y = 0;
 };
 
 exports.Bird = Bird;

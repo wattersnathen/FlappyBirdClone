@@ -21,7 +21,9 @@ var Bird = function () {
 
 Bird.prototype.onCollision = function (entity) {
     
+    window.app.pause("You're dead", (function () {
         window.app.resetGame();
+    }).bind(this));
 };
 
 exports.Bird = Bird;

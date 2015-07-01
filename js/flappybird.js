@@ -37,6 +37,7 @@ FlappyBird.prototype.pause = function (reason, nextCall) {
 	this.input.paused = this.paused;
 	this.pipes.paused = this.paused;
 
+	this.graphics.pauseReason = reason || 'PAUSED';
 };
 
 FlappyBird.prototype.resetGame = function () {

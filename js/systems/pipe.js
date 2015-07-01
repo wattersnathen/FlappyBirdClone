@@ -5,6 +5,7 @@ var PipeSystem = function (entities) {
     this.entities = entities;
     this.canvas = document.getElementById('canvas');
     this.interval = 0;
+    this.paused = false;
 };
 
 PipeSystem.prototype.run = function () {
@@ -12,6 +13,11 @@ PipeSystem.prototype.run = function () {
 };
 
 PipeSystem.prototype.tick = function () {
+    
+    if (this.paused) {
+        return;
+    }
+
     var canvasRight = 0.5 * this.canvas.width / this.canvas.height;
     var gapPosition = 0.4 + Math.random() * 0.2;
 

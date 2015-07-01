@@ -15,6 +15,8 @@ var FlappyBird = function () {
     this.physics = new physicsSystem.PhysicsSystem(this.entities);
     this.input = new inputSystem.InputSystem(this.entities);
     this.pipes = new pipeSystem.PipeSystem(this.entities);
+
+    this.paused = false;
 };
 
 FlappyBird.prototype.run = function () {
@@ -24,6 +26,18 @@ FlappyBird.prototype.run = function () {
     this.pipes.run();
 };
 
+FlappyBird.prototype.pause = function (reason, nextCall) {
+	if (this.onUnpause) {
+		this.onUnpause();
+	}
+	this.onUnpause = nextCall;
+	this.paused = !this.paused;
+	this.graphics.paused = this.paused;
+	this.physics.paused = this.paused;
+	this.input.paused = this.paused;
+	this.pipes.paused = this.paused;
+
+};
 
 FlappyBird.prototype.resetGame = function () {
 	this.entities.splice(3, this.entities.length - 3);

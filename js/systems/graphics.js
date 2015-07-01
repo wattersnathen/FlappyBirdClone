@@ -3,6 +3,8 @@ var GraphicsSystem = function (entities) {
     
     this.canvas = document.getElementById('canvas');
     this.context = this.canvas.getContext('2d');
+
+    this.paused = false;
 };
 
 GraphicsSystem.prototype.run = function () {

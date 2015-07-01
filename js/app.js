@@ -202,12 +202,9 @@ var Bird = function () {
 
 Bird.prototype.onCollision = function (entity) {
     
-    // Reset the Bird's position on collision
-    this.components.physics.position = {
-        x: settings.birdStartPos.x,
-        y: settings.birdStartPos.y
-    };
-    this.components.physics.velocity.y = 0;
+    window.app.pause("You're dead", (function () {
+        window.app.resetGame();
+    }).bind(this));
 };
 
 exports.Bird = Bird;
@@ -311,12 +308,16 @@ var bird = require('./entities/bird');
 var topedge = require('./entities/topedge');
 var bottomedge = require('./entities/bottomedge');
 
+var settings = require('./settings');
+
 var FlappyBird = function () {
     this.entities = [new bird.Bird(), new topedge.TopEdge(), new bottomedge.BottomEdge()];
     this.graphics = new graphicsSystem.GraphicsSystem(this.entities);
     this.physics = new physicsSystem.PhysicsSystem(this.entities);
     this.input = new inputSystem.InputSystem(this.entities);
     this.pipes = new pipeSystem.PipeSystem(this.entities);
+
+    this.paused = false;
 };
 
 FlappyBird.prototype.run = function () {
@@ -326,8 +327,33 @@ FlappyBird.prototype.run = function () {
     this.pipes.run();
 };
 
+FlappyBird.prototype.pause = function (reason, nextCall) {
+	if (this.onUnpause) {
+		this.onUnpause();
+	}
+	this.onUnpause = nextCall;
+	this.paused = !this.paused;
+	this.graphics.paused = this.paused;
+	this.physics.paused = this.paused;
+	this.input.paused = this.paused;
+	this.pipes.paused = this.paused;
+
+	this.graphics.pauseReason = reason || 'PAUSED';
+};
+
+FlappyBird.prototype.resetGame = function () {
+	this.entities.splice(3, this.entities.length - 3);
+
+	var bird = this.entities[0];
+	bird.components.physics.position = {
+		x: settings.birdStartPos.x,
+        y: settings.birdStartPos.y
+	};
+	bird.components.physics.velocity.y = 0;
+};
+
 exports.FlappyBird = FlappyBird;
-},{"./entities/bird":6,"./entities/bottomedge":7,"./entities/topedge":9,"./systems/graphics":14,"./systems/input":15,"./systems/physics":16,"./systems/pipe":17}],11:[function(require,module,exports){
+},{"./entities/bird":6,"./entities/bottomedge":7,"./entities/topedge":9,"./settings":12,"./systems/graphics":14,"./systems/input":15,"./systems/physics":16,"./systems/pipe":17}],11:[function(require,module,exports){
 var flappyBird = require('./flappybird');
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -372,19 +398,13 @@ CollisionSystem.prototype.tick = function () {
             if (!entityA.components.collision.collidesWith(entityB)) {
                 continue;    
             }
-                
+
             if (entityA.components.collision.onCollision) {
                 entityA.components.collision.onCollision(entityB);
-                if (entityA instanceof bird.Bird) {
-                    this.entities.splice(3, this.entities.length - 3);
-                }
             }
-            
+
             if (entityB.components.collision.onCollision) {
                 entityB.components.collision.onCollision(entityA);
-                if (entityB instanceof bird.Bird) {
-                    this.entities.splice(3, this.entities.length - 3);
-                }
             }
             
         }
@@ -398,6 +418,8 @@ var GraphicsSystem = function (entities) {
     
     this.canvas = document.getElementById('canvas');
     this.context = this.canvas.getContext('2d');
+
+    this.paused = false;
 };
 
 GraphicsSystem.prototype.run = function () {
@@ -430,6 +452,21 @@ GraphicsSystem.prototype.tick = function () {
         entity.components.graphics.draw(this.context);
     }
     this.context.restore();
+
+    if (this.paused) {
+        this.context.save();
+        this.context.fillStyle = 'rgba(0, 0, 0, 0.3)';
+        this.context.rect(0, 0, this.canvas.width, this.canvas.height);
+        this.context.fill();
+        this.context.fillStyle = "#FFFFFF";
+        this.context.font = "48px sans-serif";
+        this.context.textAlign = "center";
+        this.context.fillText(this.pauseReason, 
+            this.canvas.width / 2, 
+            this.canvas.height / 2);
+        this.context.restore();
+    }
+
     window.requestAnimationFrame(this.tick.bind(this));
 };
 
@@ -437,16 +474,27 @@ exports.GraphicsSystem = GraphicsSystem;
 },{}],15:[function(require,module,exports){
 var InputSystem = function (entities) {
     this.entities = entities;
-
+    this.paused = false;
     // Canvas is where we get input from
     this.canvas = document.getElementById('canvas');
 };
 
 InputSystem.prototype.run = function () {
     this.canvas.addEventListener('click', this.onClick.bind(this));
+    window.addEventListener('keypress', this.keyPressed.bind(this));
+};
+
+InputSystem.prototype.keyPressed = function (e) {
+	switch(e.keyCode) {
+		case 32: // spacebar
+			window.app.pause();
+	}
 };
 
 InputSystem.prototype.onClick = function () {
+	if (this.paused) {
+		window.app.pause();
+	}
     var bird = this.entities[0];
     bird.components.physics.velocity.y = 0.7;
 };
@@ -459,6 +507,7 @@ var PhysicsSystem = function (entities) {
     this.entities = entities;
     this.collisionSystem = new collisionSystem.CollisionSystem(entities);
     this.previousRun;
+    this.paused = false;
 };
 
 PhysicsSystem.prototype.run = function () {
@@ -477,16 +526,19 @@ PhysicsSystem.prototype.tick = function () {
         return;
     }
 
-    for (var i=0; i<this.entities.length; i++) {
-        var entity = this.entities[i];
-        if (!('physics' in entity.components)) {
-            continue;
-        }
+    if (!this.paused) {
+        for (var i=0; i<this.entities.length; i++) {
+            var entity = this.entities[i];
+            if (!('physics' in entity.components)) {
+                continue;
+            }
 
-        entity.components.physics.update(delta);
+            entity.components.physics.update(delta);
+        }
+        
+        this.collisionSystem.tick();
     }
-    
-    this.collisionSystem.tick();
+
 };
 
 exports.PhysicsSystem = PhysicsSystem;
@@ -498,6 +550,7 @@ var PipeSystem = function (entities) {
     this.entities = entities;
     this.canvas = document.getElementById('canvas');
     this.interval = 0;
+    this.paused = false;
 };
 
 PipeSystem.prototype.run = function () {
@@ -505,6 +558,11 @@ PipeSystem.prototype.run = function () {
 };
 
 PipeSystem.prototype.tick = function () {
+    
+    if (this.paused) {
+        return;
+    }
+
     var canvasRight = 0.5 * this.canvas.width / this.canvas.height;
     var gapPosition = 0.4 + Math.random() * 0.2;
 

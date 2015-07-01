@@ -21,19 +21,13 @@ CollisionSystem.prototype.tick = function () {
             if (!entityA.components.collision.collidesWith(entityB)) {
                 continue;    
             }
-                
+
             if (entityA.components.collision.onCollision) {
                 entityA.components.collision.onCollision(entityB);
-                if (entityA instanceof bird.Bird) {
-                    this.entities.splice(3, this.entities.length - 3);
-                }
             }
-            
+
             if (entityB.components.collision.onCollision) {
                 entityB.components.collision.onCollision(entityA);
-                if (entityB instanceof bird.Bird) {
-                    this.entities.splice(3, this.entities.length - 3);
-                }
             }
             
         }

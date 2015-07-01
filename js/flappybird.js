@@ -7,6 +7,8 @@ var bird = require('./entities/bird');
 var topedge = require('./entities/topedge');
 var bottomedge = require('./entities/bottomedge');
 
+var settings = require('./settings');
+
 var FlappyBird = function () {
     this.entities = [new bird.Bird(), new topedge.TopEdge(), new bottomedge.BottomEdge()];
     this.graphics = new graphicsSystem.GraphicsSystem(this.entities);
@@ -20,6 +22,18 @@ FlappyBird.prototype.run = function () {
     this.physics.run();
     this.input.run();
     this.pipes.run();
+};
+
+
+FlappyBird.prototype.resetGame = function () {
+	this.entities.splice(3, this.entities.length - 3);
+
+	var bird = this.entities[0];
+	bird.components.physics.position = {
+		x: settings.birdStartPos.x,
+        y: settings.birdStartPos.y
+	};
+	bird.components.physics.velocity.y = 0;
 };
 
 exports.FlappyBird = FlappyBird;

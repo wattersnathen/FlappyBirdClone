@@ -7,6 +7,14 @@ var InputSystem = function (entities) {
 
 InputSystem.prototype.run = function () {
     this.canvas.addEventListener('click', this.onClick.bind(this));
+    window.addEventListener('keypress', this.keyPressed.bind(this));
+};
+
+InputSystem.prototype.keyPressed = function (e) {
+	switch(e.keyCode) {
+		case 32: // spacebar
+			window.app.pause();
+	}
 };
 
 InputSystem.prototype.onClick = function () {

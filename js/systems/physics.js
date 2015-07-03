@@ -4,6 +4,7 @@ var PhysicsSystem = function (entities) {
     this.entities = entities;
     this.collisionSystem = new collisionSystem.CollisionSystem(entities);
     this.previousRun;
+    this.paused = false;
 };
 
 PhysicsSystem.prototype.run = function () {
@@ -22,16 +23,19 @@ PhysicsSystem.prototype.tick = function () {
         return;
     }
 
-    for (var i=0; i<this.entities.length; i++) {
-        var entity = this.entities[i];
-        if (!('physics' in entity.components)) {
-            continue;
-        }
+    if (!this.paused) {
+        for (var i=0; i<this.entities.length; i++) {
+            var entity = this.entities[i];
+            if (!('physics' in entity.components)) {
+                continue;
+            }
 
-        entity.components.physics.update(delta);
+            entity.components.physics.update(delta);
+        }
+        
+        this.collisionSystem.tick();
     }
-    
-    this.collisionSystem.tick();
+
 };
 
 exports.PhysicsSystem = PhysicsSystem;

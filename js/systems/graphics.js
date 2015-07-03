@@ -3,6 +3,8 @@ var GraphicsSystem = function (entities) {
     
     this.canvas = document.getElementById('canvas');
     this.context = this.canvas.getContext('2d');
+
+    this.paused = false;
 };
 
 GraphicsSystem.prototype.run = function () {
@@ -35,6 +37,21 @@ GraphicsSystem.prototype.tick = function () {
         entity.components.graphics.draw(this.context);
     }
     this.context.restore();
+
+    if (this.paused) {
+        this.context.save();
+        this.context.fillStyle = 'rgba(0, 0, 0, 0.3)';
+        this.context.rect(0, 0, this.canvas.width, this.canvas.height);
+        this.context.fill();
+        this.context.fillStyle = "#FFFFFF";
+        this.context.font = "48px sans-serif";
+        this.context.textAlign = "center";
+        this.context.fillText(this.pauseReason, 
+            this.canvas.width / 2, 
+            this.canvas.height / 2);
+        this.context.restore();
+    }
+
     window.requestAnimationFrame(this.tick.bind(this));
 };
 

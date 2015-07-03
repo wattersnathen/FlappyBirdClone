@@ -21,12 +21,9 @@ var Bird = function () {
 
 Bird.prototype.onCollision = function (entity) {
     
-    // Reset the Bird's position on collision
-    this.components.physics.position = {
-        x: settings.birdStartPos.x,
-        y: settings.birdStartPos.y
-    };
-    this.components.physics.velocity.y = 0;
+    window.app.pause("You're dead", (function () {
+        window.app.resetGame();
+    }).bind(this));
 };
 
 exports.Bird = Bird;

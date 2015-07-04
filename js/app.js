@@ -132,7 +132,7 @@ BirdGraphicsComponent.prototype.draw = function (context) {
 };
 
 exports.BirdGraphicsComponent = BirdGraphicsComponent;
-},{"../../settings":12}],4:[function(require,module,exports){
+},{"../../settings":14}],4:[function(require,module,exports){
 var PipeGraphicsComponent = function (entity, size) {
     this.entity = entity;
     this.size = size;
@@ -152,6 +152,26 @@ PipeGraphicsComponent.prototype.draw = function (context) {
 
 exports.PipeGraphicsComponent = PipeGraphicsComponent;
 },{}],5:[function(require,module,exports){
+var ScoreGraphicsComponent = function (entity, size) {
+	this.entity = entity;	
+	this.size = size;
+};
+
+ScoreGraphicsComponent.prototype.draw = function (context) {
+	var position = this.entity.components.physics.position;
+
+	context.save();
+	context.translate(position.x, position.y);
+	context.fillStyle = "#FF00FF";
+	context.beginPath();
+	context.rect(-this.size.x / 2, -this.size.y / 2, this.size.x, this.size.y);
+	context.fill();
+	context.closePath();
+	context.restore();
+};
+
+exports.ScoreGraphicsComponent = ScoreGraphicsComponent;
+},{}],6:[function(require,module,exports){
 var PhysicsComponent = function (entity) {
     this.entity = entity;
 
@@ -178,10 +198,12 @@ PhysicsComponent.prototype.update = function (delta) {
 };
 
 exports.PhysicsComponent = PhysicsComponent;
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 var graphicsComponent = require('../components/graphics/bird');
 var physicsComponent = require('../components/physics/physics');
 var collisionComponent = require("../components/collision/circle");
+var score = require('./score');
+
 var settings = require("../settings");
 
 var Bird = function () {
@@ -201,6 +223,10 @@ var Bird = function () {
 };
 
 Bird.prototype.onCollision = function (entity) {
+
+    if (entity instanceof score.Score) {
+        return;
+    }
     
     window.app.pause("You're dead", (function () {
         window.app.resetGame();
@@ -208,7 +234,7 @@ Bird.prototype.onCollision = function (entity) {
 };
 
 exports.Bird = Bird;
-},{"../components/collision/circle":1,"../components/graphics/bird":3,"../components/physics/physics":5,"../settings":12}],7:[function(require,module,exports){
+},{"../components/collision/circle":1,"../components/graphics/bird":3,"../components/physics/physics":6,"../settings":14,"./score":10}],8:[function(require,module,exports){
 var physicsComponent = require('../components/physics/physics');
 var collisionComponent = require('../components/collision/rect');
 var graphicsComponent = require('../components/graphics/pipe');
@@ -239,7 +265,7 @@ BottomEdge.prototype.onCollision = function (entity) {
 };
 
 exports.BottomEdge = BottomEdge;
-},{"../components/collision/rect":2,"../components/graphics/pipe":4,"../components/physics/physics":5,"../settings":12}],8:[function(require,module,exports){
+},{"../components/collision/rect":2,"../components/graphics/pipe":4,"../components/physics/physics":6,"../settings":14}],9:[function(require,module,exports){
 var graphicsComponent = require('../components/graphics/pipe');
 var physicsComponent  = require('../components/physics/physics');
 var collisionComponent = require("../components/collision/rect");
@@ -267,7 +293,37 @@ Pipe.prototype.onCollision = function (entity) {
 };
 
 exports.Pipe = Pipe;
-},{"../components/collision/rect":2,"../components/graphics/pipe":4,"../components/physics/physics":5,"../settings":12}],9:[function(require,module,exports){
+},{"../components/collision/rect":2,"../components/graphics/pipe":4,"../components/physics/physics":6,"../settings":14}],10:[function(require,module,exports){
+var physicsComponent = require('../components/physics/physics');
+var collisionComponent = require('../components/collision/rect');
+var graphicsComponent = require('../components/graphics/score');
+
+var bird = require('./bird');
+
+var settings = require('../settings');
+
+var Score = function (pos, size) {
+	var physics = new physicsComponent.PhysicsComponent(this);
+	physics.position = pos;
+	physics.velocity.x = -0.4;
+
+	var graphics = new graphicsComponent.ScoreGraphicsComponent(this, size);
+	var collision = new collisionComponent.RectCollisionComponent(this, size);
+	collision.onCollision = this.onCollision.bind(this);
+
+	this.components = {
+		physics: physics,
+		graphics: graphics,
+		collision: collision
+	};
+};
+
+Score.prototype.onCollision = function (entity) {
+
+};
+
+exports.Score = Score;
+},{"../components/collision/rect":2,"../components/graphics/score":5,"../components/physics/physics":6,"../settings":14,"./bird":7}],11:[function(require,module,exports){
 var physicsComponent = require('../components/physics/physics');
 var collisionComponent = require('../components/collision/rect');
 var graphicsComponent = require('../components/graphics/pipe');
@@ -298,11 +354,12 @@ TopEdge.prototype.onCollision = function (entity) {
 };
 
 exports.TopEdge = TopEdge;
-},{"../components/collision/rect":2,"../components/graphics/pipe":4,"../components/physics/physics":5,"../settings":12}],10:[function(require,module,exports){
+},{"../components/collision/rect":2,"../components/graphics/pipe":4,"../components/physics/physics":6,"../settings":14}],12:[function(require,module,exports){
 var graphicsSystem = require('./systems/graphics');
 var physicsSystem = require('./systems/physics');
 var inputSystem = require('./systems/input');
 var pipeSystem = require('./systems/pipe');
+var scoringSystem = require('./systems/scoring');
 
 var bird = require('./entities/bird');
 var topedge = require('./entities/topedge');
@@ -316,6 +373,7 @@ var FlappyBird = function () {
     this.physics = new physicsSystem.PhysicsSystem(this.entities);
     this.input = new inputSystem.InputSystem(this.entities);
     this.pipes = new pipeSystem.PipeSystem(this.entities);
+    this.score = new scoringSystem.ScoringSystem();
 
     this.paused = false;
 };
@@ -350,10 +408,12 @@ FlappyBird.prototype.resetGame = function () {
         y: settings.birdStartPos.y
 	};
 	bird.components.physics.velocity.y = 0;
+
+	this.score.resetScore();
 };
 
 exports.FlappyBird = FlappyBird;
-},{"./entities/bird":6,"./entities/bottomedge":7,"./entities/topedge":9,"./settings":12,"./systems/graphics":14,"./systems/input":15,"./systems/physics":16,"./systems/pipe":17}],11:[function(require,module,exports){
+},{"./entities/bird":7,"./entities/bottomedge":8,"./entities/topedge":11,"./settings":14,"./systems/graphics":16,"./systems/input":17,"./systems/physics":18,"./systems/pipe":19,"./systems/scoring":20}],13:[function(require,module,exports){
 var flappyBird = require('./flappybird');
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -361,7 +421,7 @@ document.addEventListener('DOMContentLoaded', function () {
     window.app = app;
     app.run();
 });
-},{"./flappybird":10}],12:[function(require,module,exports){
+},{"./flappybird":12}],14:[function(require,module,exports){
 /* 
     Using a settings.js file to store common property 
     values throughoutthe application.
@@ -374,9 +434,8 @@ exports.birdStartPos = {		// starting position of the bird
 	y: 0.6
 };		
 exports.gravity = -2;			// rate of gravity -- how fast bird falls
-},{}],13:[function(require,module,exports){
-var bird = require('../entities/bird');
-var pipe = require('../entities/pipe');
+},{}],15:[function(require,module,exports){
+var score = require('../entities/score');
 
 var CollisionSystem = function (entities) {
     this.entities = entities;
@@ -406,13 +465,22 @@ CollisionSystem.prototype.tick = function () {
             if (entityB.components.collision.onCollision) {
                 entityB.components.collision.onCollision(entityA);
             }
-            
+
+            if (entityA instanceof score.Score) {
+                this.entities.splice(this.entities.indexOf(entityA), 1);
+                window.app.score.updateScore();
+            }
+
+            if (entityB instanceof score.Score) {
+                this.entities.splice(this.entities.indexOf(entityB), 1);
+                window.app.score.updateScore();
+            }
         }
     }
 };
 
 exports.CollisionSystem = CollisionSystem;
-},{"../entities/bird":6,"../entities/pipe":8}],14:[function(require,module,exports){
+},{"../entities/score":10}],16:[function(require,module,exports){
 var GraphicsSystem = function (entities) {
     this.entities = entities;
     
@@ -471,7 +539,7 @@ GraphicsSystem.prototype.tick = function () {
 };
 
 exports.GraphicsSystem = GraphicsSystem;
-},{}],15:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 var InputSystem = function (entities) {
     this.entities = entities;
     this.paused = false;
@@ -500,7 +568,7 @@ InputSystem.prototype.onClick = function () {
 };
 
 exports.InputSystem = InputSystem;
-},{}],16:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 var collisionSystem = require('./collision');
 
 var PhysicsSystem = function (entities) {
@@ -542,8 +610,10 @@ PhysicsSystem.prototype.tick = function () {
 };
 
 exports.PhysicsSystem = PhysicsSystem;
-},{"./collision":13}],17:[function(require,module,exports){
+},{"./collision":15}],19:[function(require,module,exports){
 var pipe = require('../entities/pipe');
+var score = require('../entities/score');
+
 var settings = require('../settings');
 
 var PipeSystem = function (entities) {
@@ -594,8 +664,21 @@ PipeSystem.prototype.tick = function () {
 
     this.entities.push(new pipe.Pipe(position, size));
 
+    // add score entity next to pipes
+    var scorePos = {
+        x: (initialX + settings.pipeWidth) + settings.birdWidth,
+        y: gapPosition
+    };
+
+    var scoreSize = {
+        x: 0.001,
+        y: settings.pipeGap * 2
+    };
+
+    this.entities.push(new score.Score(scorePos, scoreSize));
+
     for (var i = 0; i < this.entities.length; i++) {
-        if (this.entities[i] instanceof pipe.Pipe 
+        if ((this.entities[i] instanceof pipe.Pipe || this.entities[i] instanceof score.Score)
             && this.entities[i].components.physics.position.x < -initialX) {
             this.entities.splice(i, 1);
             i--;
@@ -604,4 +687,21 @@ PipeSystem.prototype.tick = function () {
 };
 
 exports.PipeSystem = PipeSystem;
-},{"../entities/pipe":8,"../settings":12}]},{},[11]);
+},{"../entities/pipe":9,"../entities/score":10,"../settings":14}],20:[function(require,module,exports){
+var ScoringSystem = function () {
+	this.currentScore = 0;
+	this.scoreElem = document.getElementById('score');
+};
+
+ScoringSystem.prototype.resetScore = function () {
+	this.currentScore = 0;
+	this.scoreElem.innerText = this.currentScore;
+};
+
+ScoringSystem.prototype.updateScore = function () {
+	this.currentScore = this.currentScore + 1;
+	this.scoreElem.innerText = this.currentScore;
+};
+
+exports.ScoringSystem = ScoringSystem;
+},{}]},{},[13]);

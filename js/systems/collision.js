@@ -1,5 +1,4 @@
-var bird = require('../entities/bird');
-var pipe = require('../entities/pipe');
+var score = require('../entities/score');
 
 var CollisionSystem = function (entities) {
     this.entities = entities;
@@ -29,7 +28,16 @@ CollisionSystem.prototype.tick = function () {
             if (entityB.components.collision.onCollision) {
                 entityB.components.collision.onCollision(entityA);
             }
-            
+
+            if (entityA instanceof score.Score) {
+                this.entities.splice(this.entities.indexOf(entityA), 1);
+                window.app.score.updateScore();
+            }
+
+            if (entityB instanceof score.Score) {
+                this.entities.splice(this.entities.indexOf(entityB), 1);
+                window.app.score.updateScore();
+            }
         }
     }
 };

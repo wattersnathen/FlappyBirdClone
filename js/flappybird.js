@@ -2,6 +2,7 @@ var graphicsSystem = require('./systems/graphics');
 var physicsSystem = require('./systems/physics');
 var inputSystem = require('./systems/input');
 var pipeSystem = require('./systems/pipe');
+var scoringSystem = require('./systems/scoring');
 
 var bird = require('./entities/bird');
 var topedge = require('./entities/topedge');
@@ -15,6 +16,7 @@ var FlappyBird = function () {
     this.physics = new physicsSystem.PhysicsSystem(this.entities);
     this.input = new inputSystem.InputSystem(this.entities);
     this.pipes = new pipeSystem.PipeSystem(this.entities);
+    this.score = new scoringSystem.ScoringSystem();
 
     this.paused = false;
 };
@@ -49,6 +51,8 @@ FlappyBird.prototype.resetGame = function () {
         y: settings.birdStartPos.y
 	};
 	bird.components.physics.velocity.y = 0;
+
+	this.score.resetScore();
 };
 
 exports.FlappyBird = FlappyBird;

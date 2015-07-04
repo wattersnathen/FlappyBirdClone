@@ -1,6 +1,8 @@
 var graphicsComponent = require('../components/graphics/bird');
 var physicsComponent = require('../components/physics/physics');
 var collisionComponent = require("../components/collision/circle");
+var score = require('./score');
+
 var settings = require("../settings");
 
 var Bird = function () {
@@ -20,6 +22,10 @@ var Bird = function () {
 };
 
 Bird.prototype.onCollision = function (entity) {
+
+    if (entity instanceof score.Score) {
+        return;
+    }
     
     window.app.pause("You're dead", (function () {
         window.app.resetGame();

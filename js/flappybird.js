@@ -25,7 +25,7 @@ FlappyBird.prototype.run = function () {
     this.graphics.run();
     this.physics.run();
     this.input.run();
-    this.pause("Click to start Playing");
+    this.pause('Click to start Playing');
     this.pipes.run();
 };
 

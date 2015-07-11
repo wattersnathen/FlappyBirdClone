@@ -303,6 +303,8 @@ var bird = require('./bird');
 var settings = require('../settings');
 
 var Score = function (pos, size) {
+	this.scored = false;
+
 	var physics = new physicsComponent.PhysicsComponent(this);
 	physics.position = pos;
 	physics.velocity.x = -0.4;
@@ -319,7 +321,11 @@ var Score = function (pos, size) {
 };
 
 Score.prototype.onCollision = function (entity) {
-
+	if (this.scored) {
+		return;
+	}
+	this.scored = true;
+	app.score.updateScore();
 };
 
 exports.Score = Score;
@@ -466,7 +472,7 @@ CollisionSystem.prototype.tick = function () {
                 entityB.components.collision.onCollision(entityA);
             }
 
-            if (entityA instanceof score.Score) {
+/*            if (entityA instanceof score.Score) {
                 this.entities.splice(this.entities.indexOf(entityA), 1);
                 window.app.score.updateScore();
             }
@@ -474,7 +480,7 @@ CollisionSystem.prototype.tick = function () {
             if (entityB instanceof score.Score) {
                 this.entities.splice(this.entities.indexOf(entityB), 1);
                 window.app.score.updateScore();
-            }
+            }*/
         }
     }
 };
@@ -559,7 +565,7 @@ InputSystem.prototype.keyPressed = function (e) {
 	}
 };
 
-InputSystem.prototype.onClick = function () {
+InputSystem.prototype.onClick = function (e) {
 	if (this.paused) {
 		window.app.pause();
 	}

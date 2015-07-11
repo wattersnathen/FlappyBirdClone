@@ -5,6 +5,14 @@ html, body {
     overflow: hidden;
 }
 
+body {
+    /* prevent text highlight */
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
 canvas#canvas {
     width: 100%;
     height: 100%;

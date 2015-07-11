@@ -543,6 +543,8 @@ GraphicsSystem.prototype.tick = function () {
 
 exports.GraphicsSystem = GraphicsSystem;
 },{}],17:[function(require,module,exports){
+var settings = require('../settings');
+
 var InputSystem = function (entities) {
     this.entities = entities;
     this.paused = false;
@@ -567,11 +569,13 @@ InputSystem.prototype.onClick = function () {
 		window.app.pause();
 	}
     var bird = this.entities[0];
+    settings.flapping.volume = 0.1;
+    settings.flapping.play();
     bird.components.physics.velocity.y = 0.7;
 };
 
 exports.InputSystem = InputSystem;
-},{}],18:[function(require,module,exports){
+},{"../settings":14}],18:[function(require,module,exports){
 var collisionSystem = require('./collision');
 
 var PhysicsSystem = function (entities) {

@@ -1,3 +1,5 @@
+var settings = require('../settings');
+
 var InputSystem = function (entities) {
     this.entities = entities;
     this.paused = false;
@@ -22,6 +24,8 @@ InputSystem.prototype.onClick = function () {
 		window.app.pause();
 	}
     var bird = this.entities[0];
+    settings.flapping.volume = 0.1;
+    settings.flapping.play();
     bird.components.physics.velocity.y = 0.7;
 };
 

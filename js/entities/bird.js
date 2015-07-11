@@ -24,10 +24,12 @@ var Bird = function () {
 Bird.prototype.onCollision = function (entity) {
 
     if (entity instanceof score.Score) {
+        settings.scoreAudio.play();
         return;
     }
-    
+    settings.collisionAudio.play();
     window.app.pause("You're dead", (function () {
+
         window.app.resetGame();
     }).bind(this));
 };

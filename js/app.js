@@ -225,10 +225,12 @@ var Bird = function () {
 Bird.prototype.onCollision = function (entity) {
 
     if (entity instanceof score.Score) {
+        settings.scoreAudio.play();
         return;
     }
-    
+    settings.collisionAudio.play();
     window.app.pause("You're dead", (function () {
+
         window.app.resetGame();
     }).bind(this));
 };
@@ -441,6 +443,10 @@ exports.birdStartPos = {		// starting position of the bird
 	y: 0.6
 };		
 exports.gravity = -2;			// rate of gravity -- how fast bird falls
+
+exports.collisionAudio = new Audio('assets/audio/collision.mp3');
+exports.scoreAudio = new Audio('assets/audio/point.mp3');
+exports.flapping = new Audio('assets/audio/jump.mp3');
 },{}],15:[function(require,module,exports){
 var score = require('../entities/score');
 

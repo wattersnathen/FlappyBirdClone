@@ -673,7 +673,7 @@ PipeSystem.prototype.tick = function () {
 
     // add score entity next to pipes
     var scorePos = {
-        x: (initialX + settings.pipeWidth) + settings.birdWidth,
+        x: (initialX + settings.pipeWidth / 2) + settings.birdWidth,
         y: gapPosition
     };
 

@@ -25,6 +25,12 @@ ScoringSystem.prototype.setHighScore = function () {
 	}
 };
 
+ScoringSystem.prototype.resetHighScore = function () {
+	this.highScore = 0;
+	localStorage.setItem('highScore', this.highScore);
+	this.updateHighScoreView();
+};
+
 ScoringSystem.prototype.updateHighScoreView = function () {
 	this.highScoreElem.innerText = this.highScore;
 };

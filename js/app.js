@@ -471,16 +471,6 @@ CollisionSystem.prototype.tick = function () {
             if (entityB.components.collision.onCollision) {
                 entityB.components.collision.onCollision(entityA);
             }
-
-/*            if (entityA instanceof score.Score) {
-                this.entities.splice(this.entities.indexOf(entityA), 1);
-                window.app.score.updateScore();
-            }
-
-            if (entityB instanceof score.Score) {
-                this.entities.splice(this.entities.indexOf(entityB), 1);
-                window.app.score.updateScore();
-            }*/
         }
     }
 };
@@ -565,7 +555,7 @@ InputSystem.prototype.keyPressed = function (e) {
 	}
 };
 
-InputSystem.prototype.onClick = function (e) {
+InputSystem.prototype.onClick = function () {
 	if (this.paused) {
 		window.app.pause();
 	}
@@ -696,7 +686,9 @@ exports.PipeSystem = PipeSystem;
 },{"../entities/pipe":9,"../entities/score":10,"../settings":14}],20:[function(require,module,exports){
 var ScoringSystem = function () {
 	this.currentScore = 0;
+	localStorage.setItem('highScore', 0);
 	this.scoreElem = document.getElementById('score');
+	this.highScoreElem = document.getElementById('highScore');
 };
 
 ScoringSystem.prototype.resetScore = function () {
@@ -707,6 +699,14 @@ ScoringSystem.prototype.resetScore = function () {
 ScoringSystem.prototype.updateScore = function () {
 	this.currentScore = this.currentScore + 1;
 	this.scoreElem.innerText = this.currentScore;
+	this.setHighScore();
+};
+
+ScoringSystem.prototype.setHighScore = function () {
+	if (this.currentScore > localStorage.getItem('highScore')) {
+		localStorage.setItem('highScore', this.currentScore);
+		this.highScoreElem.innerText = this.currentScore;
+	}
 };
 
 exports.ScoringSystem = ScoringSystem;

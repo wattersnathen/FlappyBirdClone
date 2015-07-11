@@ -1,8 +1,9 @@
 var ScoringSystem = function () {
 	this.currentScore = 0;
-	localStorage.setItem('highScore', 0);
+	this.highScore = localStorage.getItem('highScore');
 	this.scoreElem = document.getElementById('score');
 	this.highScoreElem = document.getElementById('highScore');
+	this.updateHighScoreView();
 };
 
 ScoringSystem.prototype.resetScore = function () {
@@ -17,10 +18,21 @@ ScoringSystem.prototype.updateScore = function () {
 };
 
 ScoringSystem.prototype.setHighScore = function () {
-	if (this.currentScore > localStorage.getItem('highScore')) {
-		localStorage.setItem('highScore', this.currentScore);
-		this.highScoreElem.innerText = this.currentScore;
+	if (this.currentScore > this.highScore) {
+		this.highScore = this.currentScore;
+		localStorage.setItem('highScore', this.highScore);
+		this.updateHighScoreView();
 	}
+};
+
+ScoringSystem.prototype.resetHighScore = function () {
+	this.highScore = 0;
+	localStorage.setItem('highScore', this.highScore);
+	this.updateHighScoreView();
+};
+
+ScoringSystem.prototype.updateHighScoreView = function () {
+	this.highScoreElem.innerText = this.highScore;
 };
 
 exports.ScoringSystem = ScoringSystem;

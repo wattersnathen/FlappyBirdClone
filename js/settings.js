@@ -14,3 +14,6 @@ exports.gravity = -2;			// rate of gravity -- how fast bird falls
 exports.collisionAudio = new Audio('assets/audio/collision.mp3');
 exports.scoreAudio = new Audio('assets/audio/point.mp3');
 exports.flapping = new Audio('assets/audio/jump.mp3');
+
+exports.spaceBirdImage = 'assets/images/Blue_Space_Bird.gif';
+exports.backgroundImg = 'assets/images/space_background.jpg';

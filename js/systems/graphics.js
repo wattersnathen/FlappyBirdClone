@@ -59,10 +59,10 @@ GraphicsSystem.prototype.tick = function () {
 
     if (this.paused) {
         this.context.save();
-        this.context.fillStyle = 'rgba(0, 0, 0, 0.3)';
+        this.context.fillStyle = 'rgba(100, 100, 100, 0.3)';
         this.context.rect(0, 0, this.canvas.width, this.canvas.height);
         this.context.fill();
-        this.context.fillStyle = "#FFFFFF";
+        this.context.fillStyle = "#aaaaaa";
         this.context.font = "48px sans-serif";
         this.context.textAlign = "center";
         this.context.fillText(this.pauseReason, 

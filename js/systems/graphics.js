@@ -40,8 +40,10 @@ GraphicsSystem.prototype.tick = function () {
 
     this.scrollVal += 0.8;
 
-    this.context.drawImage(this.background, -this.scrollVal, 0, this.background.width, this.background.height);
-    this.context.drawImage(this.background, this.canvas.width - this.scrollVal, 0, this.background.width, this.background.height);
+    this.context.drawImage(
+        this.background, -this.scrollVal, 0, this.canvas.width, this.background.height);
+    this.context.drawImage(
+        this.background, this.canvas.width - this.scrollVal, 0, this.canvas.width, this.background.height);
 
     this.context.translate(this.canvas.width / 2, this.canvas.height);
     this.context.scale(this.canvas.height, -this.canvas.height);

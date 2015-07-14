@@ -14,10 +14,14 @@ var Bird = function () {
     var collision = new collisionComponent.CircleCollisionComponent(this, 0.02);
     collision.onCollision = this.onCollision.bind(this);
     
+    var birdImg = document.createElement('img');
+    birdImg.src = settings.spaceBirdImage;
+
     this.components = {
         physics: physics,
         graphics: graphics,
-        collision: collision
+        collision: collision,
+        birdImg: birdImg
     };
 };
 

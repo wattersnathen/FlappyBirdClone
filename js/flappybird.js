@@ -52,7 +52,7 @@ FlappyBird.prototype.pause = function (reason, nextCall) {
 };
 
 FlappyBird.prototype.resetGame = function () {
-	this.entities.splice(5, this.entities.length - 5);
+	this.entities.splice(4, this.entities.length - 4);
 
 	var bird = this.entities.bird;
 	bird.components.physics.position = {

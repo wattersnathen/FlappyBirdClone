@@ -432,8 +432,6 @@ var collisionComponent = require('../components/collision/circle');
 
 var settings = require('../settings');
 
-var bird = require('./bird');
-
 var Shuttle = function () {
 	var shuttleImage = new Image();
 	shuttleImage.src = settings.shuttleImage;
@@ -466,7 +464,7 @@ var getRandom = function (min, max) {
 };
 
 exports.Shuttle = Shuttle;
-},{"../components/collision/circle":1,"../components/graphics/shuttle":7,"../components/physics/physics":8,"../settings":18,"./bird":10}],15:[function(require,module,exports){
+},{"../components/collision/circle":1,"../components/graphics/shuttle":7,"../components/physics/physics":8,"../settings":18}],15:[function(require,module,exports){
 var physicsComponent = require('../components/physics/physics');
 var collisionComponent = require('../components/collision/rect');
 var graphicsComponent = require('../components/graphics/pipe');
@@ -552,7 +550,7 @@ FlappyBird.prototype.pause = function (reason, nextCall) {
 };
 
 FlappyBird.prototype.resetGame = function () {
-	this.entities.splice(5, this.entities.length - 5);
+	this.entities.splice(4, this.entities.length - 4);
 
 	var bird = this.entities.bird;
 	bird.components.physics.position = {
@@ -874,6 +872,8 @@ PipeSystem.prototype.tick = function () {
             i--;
         }
 
+        // TODO: move this out of the pipe system, and create a separate entity on 
+        // screen edges for garbage collection.
         else if (this.entities[i] instanceof shuttle.Shuttle 
                 && this.entities[i].components.physics.position.x > initialX) {
             this.entities.splice(i, 1);

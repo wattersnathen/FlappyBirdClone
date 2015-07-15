@@ -11,6 +11,8 @@ exports.birdStartPos = {		// starting position of the bird
 };		
 exports.gravity = -2;			// rate of gravity -- how fast bird falls
 
+exports.slowmo = (location.hash == '#cheat' ? 3 : 1);
+
 exports.collisionAudio = new Audio('assets/audio/collision.mp3');
 exports.scoreAudio = new Audio('assets/audio/point.mp3');
 exports.flapping = new Audio('assets/audio/jump.mp3');

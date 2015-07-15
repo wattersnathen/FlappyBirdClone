@@ -1,3 +1,5 @@
+var settings = require('../settings');
+
 var collisionSystem = require('./collision');
 
 var PhysicsSystem = function (entities) {
@@ -16,6 +18,8 @@ PhysicsSystem.prototype.tick = function () {
     var timestamp = performance.now();
     
     var delta = (timestamp - this.previousRun) / 1000;
+
+    delta = delta / settings.slowmo;
 
     this.previousRun = timestamp;
     

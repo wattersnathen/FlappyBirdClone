@@ -32,19 +32,25 @@ GraphicsSystem.prototype.tick = function () {
     // clear the canvas
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     
-    this.context.save();
+    // this.context.save();
 
-    // set up the background scrolling effect
-    if (this.scrollVal >= this.canvas.width - 0.8) {
-        this.scrollVal = 0;
-    }
+    // // set up the background scrolling effect
+    // if (this.scrollVal >= this.canvas.width - 0.8) {
+    //     this.scrollVal = 0;
+    // }
 
-    this.scrollVal += 0.8;
+    // this.scrollVal += 0.8;
 
-    this.context.drawImage(
-        this.background, -this.scrollVal, 0, this.canvas.width, this.background.height);
-    this.context.drawImage(
-        this.background, this.canvas.width - this.scrollVal, 0, this.canvas.width, this.background.height);
+    // this.context.save();
+
+    // this.context.drawImage(
+    //     this.background, -this.scrollVal, 0, this.canvas.width, this.background.height);
+    // this.context.translate(this.canvas.width, 0);
+    // this.context.scale(-1, 1);
+    // this.context.drawImage(
+    //     this.background, -(this.canvas.width - this.scrollVal), 0, this.canvas.width, this.background.height);
+
+    // this.context.restore();
 
     this.context.translate(this.canvas.width / 2, this.canvas.height);
     this.context.scale(this.canvas.height, -this.canvas.height);
@@ -60,6 +66,9 @@ GraphicsSystem.prototype.tick = function () {
         entity.components.graphics.draw(this.context);
     }
     this.context.restore();
+
+    this.context.fillStyle = 'black';
+    this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
     if (this.paused) {
         this.context.save();

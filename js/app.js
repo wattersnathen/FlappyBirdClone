@@ -428,8 +428,11 @@ exports.Score = Score;
 },{"../components/collision/rect":2,"../components/graphics/score":6,"../components/physics/physics":8,"../settings":18,"./shuttle":14}],14:[function(require,module,exports){
 var physicsComponent = require('../components/physics/physics');
 var graphicsComponent = require('../components/graphics/shuttle');
+var collisionComponent = require('../components/collision/circle');
 
 var settings = require('../settings');
+
+var bird = require('./bird');
 
 var Shuttle = function () {
 	var shuttleImage = new Image();
@@ -447,19 +450,23 @@ var Shuttle = function () {
 
 	var graphics = new graphicsComponent.ShuttleGraphicsComponent(this);
 
+	var collision = new collisionComponent.CircleCollisionComponent(this, 0.02);
+
 	this.components = {
 		physics: physics,
 		graphics: graphics,
+		collision: collision,
 		shuttleImage: shuttleImage
 	};
 };
+
 
 var getRandom = function (min, max) {
 	return Math.random() * (max - min) + min;
 };
 
 exports.Shuttle = Shuttle;
-},{"../components/graphics/shuttle":7,"../components/physics/physics":8,"../settings":18}],15:[function(require,module,exports){
+},{"../components/collision/circle":1,"../components/graphics/shuttle":7,"../components/physics/physics":8,"../settings":18,"./bird":10}],15:[function(require,module,exports){
 var physicsComponent = require('../components/physics/physics');
 var collisionComponent = require('../components/collision/rect');
 var graphicsComponent = require('../components/graphics/pipe');
@@ -510,8 +517,7 @@ var FlappyBird = function () {
     this.entities = [
     	new background.Background(), 
     	new topedge.TopEdge(), 
-    	new bottomedge.BottomEdge(), 
-    	new shuttle.Shuttle(),
+    	new bottomedge.BottomEdge(),
     	this.bird];
     this.entities.bird = this.bird;
     this.graphics = new graphicsSystem.GraphicsSystem(this.entities);
@@ -580,6 +586,8 @@ exports.birdStartPos = {		// starting position of the bird
 	y: 0.6
 };		
 exports.gravity = -2;			// rate of gravity -- how fast bird falls
+
+exports.slowmo = (location.hash == '#cheat' ? 3 : 1);
 
 exports.collisionAudio = new Audio('assets/audio/collision.mp3');
 exports.scoreAudio = new Audio('assets/audio/point.mp3');
@@ -746,6 +754,8 @@ InputSystem.prototype.onClick = function () {
 
 exports.InputSystem = InputSystem;
 },{"../settings":18}],22:[function(require,module,exports){
+var settings = require('../settings');
+
 var collisionSystem = require('./collision');
 
 var PhysicsSystem = function (entities) {
@@ -764,6 +774,8 @@ PhysicsSystem.prototype.tick = function () {
     var timestamp = performance.now();
     
     var delta = (timestamp - this.previousRun) / 1000;
+
+    delta = delta / settings.slowmo;
 
     this.previousRun = timestamp;
     
@@ -787,9 +799,10 @@ PhysicsSystem.prototype.tick = function () {
 };
 
 exports.PhysicsSystem = PhysicsSystem;
-},{"./collision":19}],23:[function(require,module,exports){
+},{"../settings":18,"./collision":19}],23:[function(require,module,exports){
 var pipe = require('../entities/pipe');
 var score = require('../entities/score');
+var shuttle = require('../entities/shuttle');
 
 var settings = require('../settings');
 
@@ -860,11 +873,17 @@ PipeSystem.prototype.tick = function () {
             this.entities.splice(i, 1);
             i--;
         }
+
+        else if (this.entities[i] instanceof shuttle.Shuttle 
+                && this.entities[i].components.physics.position.x > initialX) {
+            this.entities.splice(i, 1);
+            i--;
+        }
     }
 };
 
 exports.PipeSystem = PipeSystem;
-},{"../entities/pipe":12,"../entities/score":13,"../settings":18}],24:[function(require,module,exports){
+},{"../entities/pipe":12,"../entities/score":13,"../entities/shuttle":14,"../settings":18}],24:[function(require,module,exports){
 var ScoringSystem = function () {
 	this.currentScore = 0;
 	this.highScore = localStorage.getItem('highScore');

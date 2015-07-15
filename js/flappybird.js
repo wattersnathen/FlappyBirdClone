@@ -17,8 +17,7 @@ var FlappyBird = function () {
     this.entities = [
     	new background.Background(), 
     	new topedge.TopEdge(), 
-    	new bottomedge.BottomEdge(), 
-    	new shuttle.Shuttle(),
+    	new bottomedge.BottomEdge(),
     	this.bird];
     this.entities.bird = this.bird;
     this.graphics = new graphicsSystem.GraphicsSystem(this.entities);

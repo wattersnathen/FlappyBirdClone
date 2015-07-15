@@ -393,9 +393,9 @@ var physicsComponent = require('../components/physics/physics');
 var collisionComponent = require('../components/collision/rect');
 var graphicsComponent = require('../components/graphics/score');
 
-var bird = require('./bird');
-
 var settings = require('../settings');
+
+var shuttle = require('./shuttle');
 
 var Score = function (pos, size) {
 	this.scored = false;
@@ -420,11 +420,12 @@ Score.prototype.onCollision = function (entity) {
 		return;
 	}
 	this.scored = true;
+	app.entities.push(new shuttle.Shuttle());
 	app.score.updateScore();
 };
 
 exports.Score = Score;
-},{"../components/collision/rect":2,"../components/graphics/score":6,"../components/physics/physics":8,"../settings":18,"./bird":10}],14:[function(require,module,exports){
+},{"../components/collision/rect":2,"../components/graphics/score":6,"../components/physics/physics":8,"../settings":18,"./shuttle":14}],14:[function(require,module,exports){
 var physicsComponent = require('../components/physics/physics');
 var graphicsComponent = require('../components/graphics/shuttle');
 
@@ -438,11 +439,11 @@ var Shuttle = function () {
 	var aspectRatio = canvas.width / canvas.height;
 
 	var physics = new physicsComponent.PhysicsComponent(this);
-	physics.position.x = -aspectRatio;
+	physics.position.x = -(aspectRatio / 2) - 0.1;
 	physics.position.y = getRandom(0.1, 0.9);
-	physics.velocity.x = 0.2;
-	physics.velocity.y = 0.04;
-	physics.acceleration.y = -0.02;
+	physics.velocity.x = 0.8;
+	physics.velocity.y = getRandom(0.1, 0.3);
+	physics.acceleration.y = getRandom(-0.04, -0.12);
 
 	var graphics = new graphicsComponent.ShuttleGraphicsComponent(this);
 

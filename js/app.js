@@ -169,7 +169,7 @@ ScoreGraphicsComponent.prototype.draw = function (context) {
 
 	context.save();
 	context.translate(position.x, position.y);
-	context.fillStyle = "#FF00FF";
+	context.fillStyle = "rgba(0, 0, 0, 0)";
 	context.beginPath();
 	context.rect(-this.size.x / 2, -this.size.y / 2, this.size.x, this.size.y);
 	context.fill();
@@ -534,6 +534,7 @@ GraphicsSystem.prototype.tick = function () {
     
     this.context.save();
 
+    // set up the background scrolling effect
     if (this.scrollVal >= this.canvas.width - 0.8) {
         this.scrollVal = 0;
     }
@@ -548,6 +549,7 @@ GraphicsSystem.prototype.tick = function () {
     this.context.translate(this.canvas.width / 2, this.canvas.height);
     this.context.scale(this.canvas.height, -this.canvas.height);
 
+    // draw each entities if it has a graphics component
     for (var idx = 0; idx < this.entities.length; idx++) {
         var entity = this.entities[idx];
         

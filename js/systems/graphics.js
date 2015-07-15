@@ -34,6 +34,7 @@ GraphicsSystem.prototype.tick = function () {
     
     this.context.save();
 
+    // set up the background scrolling effect
     if (this.scrollVal >= this.canvas.width - 0.8) {
         this.scrollVal = 0;
     }
@@ -48,6 +49,7 @@ GraphicsSystem.prototype.tick = function () {
     this.context.translate(this.canvas.width / 2, this.canvas.height);
     this.context.scale(this.canvas.height, -this.canvas.height);
 
+    // draw each entities if it has a graphics component
     for (var idx = 0; idx < this.entities.length; idx++) {
         var entity = this.entities[idx];
         

@@ -7,8 +7,6 @@ var BackgroundGraphicsComponent = function (entity) {
 
 BackgroundGraphicsComponent.prototype.draw = function (context) {
 
-	return;
-
 	var physics = this.entity.components.physics;
 	var backgroundImg = this.entity.components.backgroundImg;
 
@@ -16,12 +14,19 @@ BackgroundGraphicsComponent.prototype.draw = function (context) {
 
 	context.save();
 
+	if ((physics.position.x + aspectRatio) <= -(aspectRatio / 2)) {
+		physics.position.x += aspectRatio * 2;
+	}
+
+	context.translate(-aspectRatio, 0);
 	context.drawImage(
-		backgroundImg, -physics.position.x, 0, aspectRatio, backgroundImg.height);
-	context.translate(this.canvas.width, 0);
+		backgroundImg, physics.position.x, 0, aspectRatio, 1);
+	context.drawImage(
+		backgroundImg, physics.position.x + aspectRatio * 2, 0, aspectRatio, 1);
+	context.translate(aspectRatio, 0);
 	context.scale(-1, 1);
 	context.drawImage(
-		backgroundImg, -(this.canvas.width - physics.position.x), 0, aspectRatio, backgroundImg.height);
+		backgroundImg, -(aspectRatio + physics.position.x), 0, aspectRatio, 1);
 
 	context.restore();
 };

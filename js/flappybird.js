@@ -8,12 +8,18 @@ var bird = require('./entities/bird');
 var topedge = require('./entities/topedge');
 var bottomedge = require('./entities/bottomedge');
 var background = require('./entities/background');
+var shuttle = require('./entities/shuttle');
 
 var settings = require('./settings');
 
 var FlappyBird = function () {
 	this.bird = new bird.Bird();
-    this.entities = [new background.Background(), new topedge.TopEdge(), new bottomedge.BottomEdge(), this.bird];
+    this.entities = [
+    	new background.Background(), 
+    	new topedge.TopEdge(), 
+    	new bottomedge.BottomEdge(), 
+    	new shuttle.Shuttle(),
+    	this.bird];
     this.entities.bird = this.bird;
     this.graphics = new graphicsSystem.GraphicsSystem(this.entities);
     this.physics = new physicsSystem.PhysicsSystem(this.entities);
@@ -47,7 +53,7 @@ FlappyBird.prototype.pause = function (reason, nextCall) {
 };
 
 FlappyBird.prototype.resetGame = function () {
-	this.entities.splice(4, this.entities.length - 4);
+	this.entities.splice(5, this.entities.length - 5);
 
 	var bird = this.entities.bird;
 	bird.components.physics.position = {

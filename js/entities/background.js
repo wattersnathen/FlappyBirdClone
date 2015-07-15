@@ -8,7 +8,7 @@ var Background = function () {
 	var physics = new physicsComponent.PhysicsComponent(this);
 	physics.position.x = 0;
 	physics.position.y = 1;
-	physics.velocity.x = -0.2;
+	physics.velocity.x = -0.02;
 
 	var graphics = new graphicsComponent.BackgroundGraphicsComponent(this);
 

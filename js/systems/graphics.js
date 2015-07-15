@@ -32,7 +32,7 @@ GraphicsSystem.prototype.tick = function () {
     // clear the canvas
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     
-    // this.context.save();
+    this.context.save();
 
     // // set up the background scrolling effect
     // if (this.scrollVal >= this.canvas.width - 0.8) {
@@ -66,10 +66,7 @@ GraphicsSystem.prototype.tick = function () {
         entity.components.graphics.draw(this.context);
     }
     this.context.restore();
-
-    this.context.fillStyle = 'black';
-    this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
+    
     if (this.paused) {
         this.context.save();
         this.context.fillStyle = 'rgba(100, 100, 100, 0.3)';

@@ -2,9 +2,9 @@ var physicsComponent = require('../components/physics/physics');
 var collisionComponent = require('../components/collision/rect');
 var graphicsComponent = require('../components/graphics/score');
 
-var bird = require('./bird');
-
 var settings = require('../settings');
+
+var shuttle = require('./shuttle');
 
 var Score = function (pos, size) {
 	this.scored = false;
@@ -29,6 +29,7 @@ Score.prototype.onCollision = function (entity) {
 		return;
 	}
 	this.scored = true;
+	app.entities.push(new shuttle.Shuttle());
 	app.score.updateScore();
 };
 

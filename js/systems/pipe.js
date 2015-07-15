@@ -1,5 +1,6 @@
 var pipe = require('../entities/pipe');
 var score = require('../entities/score');
+var shuttle = require('../entities/shuttle');
 
 var settings = require('../settings');
 
@@ -67,6 +68,14 @@ PipeSystem.prototype.tick = function () {
     for (var i = 0; i < this.entities.length; i++) {
         if ((this.entities[i] instanceof pipe.Pipe || this.entities[i] instanceof score.Score)
             && this.entities[i].components.physics.position.x < -initialX) {
+            this.entities.splice(i, 1);
+            i--;
+        }
+
+        // TODO: move this out of the pipe system, and create a separate entity on 
+        // screen edges for garbage collection.
+        else if (this.entities[i] instanceof shuttle.Shuttle 
+                && this.entities[i].components.physics.position.x > initialX) {
             this.entities.splice(i, 1);
             i--;
         }

@@ -23,7 +23,7 @@ InputSystem.prototype.onClick = function () {
 	if (this.paused) {
 		window.app.pause();
 	}
-    var bird = this.entities[0];
+    var bird = this.entities.bird;
     settings.flapping.volume = 0.1;
     settings.flapping.play();
     bird.components.physics.velocity.y = 0.7;

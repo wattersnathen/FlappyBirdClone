@@ -1,5 +1,3 @@
-var score = require('../entities/score');
-
 var CollisionSystem = function (entities) {
     this.entities = entities;
 };

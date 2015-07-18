@@ -8,7 +8,6 @@ var Pipe = function (pos, size) {
     var graphics = new graphicsComponent.PipeGraphicsComponent(this, size);   
     
     var collision = new collisionComponent.RectCollisionComponent(this, size);
-    collision.onCollision = this.onCollision.bind(this);
     
     physics.position = pos;
     physics.velocity.x = -0.4;
@@ -18,10 +17,6 @@ var Pipe = function (pos, size) {
         graphics: graphics,
         collision: collision
     };
-};
-
-Pipe.prototype.onCollision = function (entity) {
-    // console.log('Pipe collided with entity: ', entity);
 };
 
 exports.Pipe = Pipe;

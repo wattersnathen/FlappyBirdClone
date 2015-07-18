@@ -17,6 +17,10 @@ var Shuttle = function () {
 	physics.velocity.x = 0.8;
 	physics.velocity.y = getRandom(0.15, 0.35);
 
+	if (physics.position.y > 0.7) {
+		physics.velocity.y = -physics.velocity.y;
+	}
+
 	physics.acceleration.y = getRandom(-0.04, -0.12);
 
 	var graphics = new graphicsComponent.ShuttleGraphicsComponent(this);
@@ -30,7 +34,6 @@ var Shuttle = function () {
 		shuttleImage: shuttleImage
 	};
 };
-
 
 var getRandom = function (min, max) {
 	return Math.random() * (max - min) + min;

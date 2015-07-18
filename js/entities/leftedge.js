@@ -1,17 +1,24 @@
 var physicsComponent = require('../components/physics/physics');
 var collisionComponent = require('../components/collision/rect');
 var graphicsComponent = require('../components/graphics/pipe');
+
 var settings = require('../settings');
 
-var BottomEdge = function () {
+var pipe = require('./pipe');
+var score = require('./score');
+
+var LeftEdge = function () {
 	this.dimens = {
-		x: settings.birdWidth * 2,	// only need a small width since bird is centered
-		y: 0.01						// very thin
-	};	
+		x: 0.001,
+		y: 1     
+	};
+
+	var canvas = document.getElementById('canvas');
+	var aspectRatio = canvas.width / canvas.height;
 
 	var physics = new physicsComponent.PhysicsComponent(this);
-	physics.position.x = 0; 	// bird is always centered on canvas
-	physics.position.y = -0.05; // just below the canvas's bottom edge
+	physics.position.x = -(aspectRatio / 2);
+	physics.position.y = 0.001;
 
 	var graphics = new graphicsComponent.PipeGraphicsComponent(this, this.dimens);
 	var collision = new collisionComponent.RectCollisionComponent(this, this.dimens);
@@ -20,7 +27,7 @@ var BottomEdge = function () {
 		physics: physics,
 		collision: collision,
 		graphics: graphics
-	};
+	}
 };
 
-exports.BottomEdge = BottomEdge;
+exports.LeftEdge = LeftEdge;

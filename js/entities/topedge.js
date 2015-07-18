@@ -11,7 +11,7 @@ var TopEdge = function () {
 
 	var physics = new physicsComponent.PhysicsComponent(this);
 	physics.position.x = 0; 	// bird is always centered on canvas
-	physics.position.y = 1.005;  // just above the canvas's top edge
+	physics.position.y = 1.05;  // just above the canvas's top edge
 
 	var graphics = new graphicsComponent.PipeGraphicsComponent(this, this.dimens);
 	var collision = new collisionComponent.RectCollisionComponent(this, this.dimens);
@@ -21,10 +21,6 @@ var TopEdge = function () {
 		collision: collision,
 		graphics: graphics
 	};
-};
-
-TopEdge.prototype.onCollision = function (entity) {
-//	console.log('Edge collided with entity: ', entity);
 };
 
 exports.TopEdge = TopEdge;

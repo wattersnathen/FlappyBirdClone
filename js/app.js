@@ -369,14 +369,14 @@ var score = require('./score');
 var LeftEdge = function () {
 	this.dimens = {
 		x: 0.001,
-		y: 1     
+		y: document.getElementById('canvas').height   
 	};
 
 	var canvas = document.getElementById('canvas');
 	var aspectRatio = canvas.width / canvas.height;
 
 	var physics = new physicsComponent.PhysicsComponent(this);
-	physics.position.x = -(aspectRatio / 2);
+	physics.position.x = -(aspectRatio / 2) - 0.1;
 	physics.position.y = 0.001;
 
 	var graphics = new graphicsComponent.PipeGraphicsComponent(this, this.dimens);
@@ -396,8 +396,6 @@ var physicsComponent  = require('../components/physics/physics');
 var collisionComponent = require("../components/collision/rect");
 var settings = require("../settings");
 
-var leftEdge = require('./leftedge');
-
 var Pipe = function (pos, size) {
     var physics = new physicsComponent.PhysicsComponent(this);    
     var graphics = new graphicsComponent.PipeGraphicsComponent(this, size);   
@@ -413,8 +411,9 @@ var Pipe = function (pos, size) {
         collision: collision
     };
 };
+
 exports.Pipe = Pipe;
-},{"../components/collision/rect":2,"../components/graphics/pipe":5,"../components/physics/physics":8,"../settings":20,"./leftedge":12}],14:[function(require,module,exports){
+},{"../components/collision/rect":2,"../components/graphics/pipe":5,"../components/physics/physics":8,"../settings":20}],14:[function(require,module,exports){
 var physicsComponent = require('../components/physics/physics');
 var collisionComponent = require('../components/collision/rect');
 var graphicsComponent = require('../components/graphics/pipe');
@@ -424,14 +423,14 @@ var settings = require('../settings');
 var RightEdge = function () {
 	this.dimens = {
 		x: 0.1,
-		y: 1
+		y: document.getElementById('canvas').height
 	};
 
 	var canvas = document.getElementById('canvas');
 	var aspectRatio = canvas.width / canvas.height;
 
 	var physics = new physicsComponent.PhysicsComponent(this);
-	physics.position.x = aspectRatio / 2;
+	physics.position.x = aspectRatio / 2 + 0.5;
 	physics.position.y = 0;
 
 	var graphics = new graphicsComponent.PipeGraphicsComponent(this, this.dimens);
@@ -453,6 +452,7 @@ var graphicsComponent = require('../components/graphics/score');
 var settings = require('../settings');
 
 var shuttle = require('./shuttle');
+var bird = require('./bird');
 
 var Score = function (pos, size) {
 	this.scored = false;
@@ -473,23 +473,24 @@ var Score = function (pos, size) {
 };
 
 Score.prototype.onCollision = function (entity) {
-	if (this.scored) {
+	if (this.scored || entity instanceof shuttle.Shuttle) {
 		return;
 	}
+	
 	this.scored = true;
-	app.entities.push(new shuttle.Shuttle());
+
+	if (entity instanceof bird.Bird) {
+		app.entities.push(new shuttle.Shuttle());	
+	}
+	
 	app.score.updateScore();
 };
 
 exports.Score = Score;
-},{"../components/collision/rect":2,"../components/graphics/score":6,"../components/physics/physics":8,"../settings":20,"./shuttle":16}],16:[function(require,module,exports){
+},{"../components/collision/rect":2,"../components/graphics/score":6,"../components/physics/physics":8,"../settings":20,"./bird":10,"./shuttle":16}],16:[function(require,module,exports){
 var physicsComponent = require('../components/physics/physics');
 var graphicsComponent = require('../components/graphics/shuttle');
 var collisionComponent = require('../components/collision/circle');
-
-var topedge = require('./topedge');
-var bottomedge = require('./bottomedge');
-var rightedge = require('./rightedge');
 
 var settings = require('../settings');
 
@@ -529,7 +530,7 @@ var getRandom = function (min, max) {
 };
 
 exports.Shuttle = Shuttle;
-},{"../components/collision/circle":1,"../components/graphics/shuttle":7,"../components/physics/physics":8,"../settings":20,"./bottomedge":11,"./rightedge":14,"./topedge":17}],17:[function(require,module,exports){
+},{"../components/collision/circle":1,"../components/graphics/shuttle":7,"../components/physics/physics":8,"../settings":20}],17:[function(require,module,exports){
 var physicsComponent = require('../components/physics/physics');
 var collisionComponent = require('../components/collision/rect');
 var graphicsComponent = require('../components/graphics/pipe');
@@ -562,7 +563,6 @@ var physicsSystem = require('./systems/physics');
 var inputSystem = require('./systems/input');
 var pipeSystem = require('./systems/pipe');
 var scoringSystem = require('./systems/scoring');
-var collector = require('./systems/collector');
 
 var bird = require('./entities/bird');
 var topedge = require('./entities/topedge');
@@ -629,7 +629,7 @@ FlappyBird.prototype.resetGame = function () {
 };
 
 exports.FlappyBird = FlappyBird;
-},{"./entities/background":9,"./entities/bird":10,"./entities/bottomedge":11,"./entities/leftedge":12,"./entities/rightedge":14,"./entities/shuttle":16,"./entities/topedge":17,"./settings":20,"./systems/collector":21,"./systems/graphics":23,"./systems/input":24,"./systems/physics":25,"./systems/pipe":26,"./systems/scoring":27}],19:[function(require,module,exports){
+},{"./entities/background":9,"./entities/bird":10,"./entities/bottomedge":11,"./entities/leftedge":12,"./entities/rightedge":14,"./entities/shuttle":16,"./entities/topedge":17,"./settings":20,"./systems/graphics":23,"./systems/input":24,"./systems/physics":25,"./systems/pipe":26,"./systems/scoring":27}],19:[function(require,module,exports){
 var flappyBird = require('./flappybird');
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -668,8 +668,9 @@ var bottomedge = require('../entities/bottomedge');
 
 var pipe = require('../entities/pipe');
 var score = require('../entities/score');
-
 var shuttle = require('../entities/shuttle');
+
+var settings = require('../settings');
 
 var CollectorSystem = function (entities) {
 	this.entities = entities;
@@ -687,15 +688,14 @@ CollectorSystem.prototype.tick = function () {
 
 		// collect pipes and score objects
 	    if ((entity instanceof pipe.Pipe || entity instanceof score.Score)
-	        && entity.components.physics.position.x < -this.canvasAspectRatio / 2) {
-	    	console.log('pipe off screen');
+	        && entity.components.physics.position.x < -this.canvasAspectRatio / 2 - settings.pipeWidth) {
 	        this.entities.splice(idx, 1);
 	        idx--;
 	    }
 
 	    // collect shuttles
 	    if (entity instanceof shuttle.Shuttle && ( 
-	    	entity.components.physics.position.x > this.canvasAspectRatio / 2 + 0.1 ||
+	    	entity.components.physics.position.x > this.canvasAspectRatio / 2 + settings.pipeWidth||
 	    	entity.components.physics.position.y > 1 ||
 	    	entity.components.physics.position.y < 0)) {
 	    	this.entities.splice(idx, 1);
@@ -706,7 +706,7 @@ CollectorSystem.prototype.tick = function () {
 };
 
 exports.CollectorSystem = CollectorSystem;
-},{"../entities/bottomedge":11,"../entities/leftedge":12,"../entities/pipe":13,"../entities/rightedge":14,"../entities/score":15,"../entities/shuttle":16,"../entities/topedge":17}],22:[function(require,module,exports){
+},{"../entities/bottomedge":11,"../entities/leftedge":12,"../entities/pipe":13,"../entities/rightedge":14,"../entities/score":15,"../entities/shuttle":16,"../entities/topedge":17,"../settings":20}],22:[function(require,module,exports){
 var CollisionSystem = function (entities) {
     this.entities = entities;
 };

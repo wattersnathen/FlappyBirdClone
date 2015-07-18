@@ -5,8 +5,9 @@ var bottomedge = require('../entities/bottomedge');
 
 var pipe = require('../entities/pipe');
 var score = require('../entities/score');
-
 var shuttle = require('../entities/shuttle');
+
+var settings = require('../settings');
 
 var CollectorSystem = function (entities) {
 	this.entities = entities;
@@ -24,15 +25,14 @@ CollectorSystem.prototype.tick = function () {
 
 		// collect pipes and score objects
 	    if ((entity instanceof pipe.Pipe || entity instanceof score.Score)
-	        && entity.components.physics.position.x < -this.canvasAspectRatio / 2) {
-	    	console.log('pipe off screen');
+	        && entity.components.physics.position.x < -this.canvasAspectRatio / 2 - settings.pipeWidth) {
 	        this.entities.splice(idx, 1);
 	        idx--;
 	    }
 
 	    // collect shuttles
 	    if (entity instanceof shuttle.Shuttle && ( 
-	    	entity.components.physics.position.x > this.canvasAspectRatio / 2 + 0.1 ||
+	    	entity.components.physics.position.x > this.canvasAspectRatio / 2 + settings.pipeWidth||
 	    	entity.components.physics.position.y > 1 ||
 	    	entity.components.physics.position.y < 0)) {
 	    	this.entities.splice(idx, 1);

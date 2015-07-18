@@ -5,6 +5,7 @@ var graphicsComponent = require('../components/graphics/score');
 var settings = require('../settings');
 
 var shuttle = require('./shuttle');
+var bird = require('./bird');
 
 var Score = function (pos, size) {
 	this.scored = false;
@@ -25,11 +26,16 @@ var Score = function (pos, size) {
 };
 
 Score.prototype.onCollision = function (entity) {
-	if (this.scored) {
+	if (this.scored || entity instanceof shuttle.Shuttle) {
 		return;
 	}
+	
 	this.scored = true;
-	app.entities.push(new shuttle.Shuttle());
+
+	if (entity instanceof bird.Bird) {
+		app.entities.push(new shuttle.Shuttle());	
+	}
+	
 	app.score.updateScore();
 };
 
